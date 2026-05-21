@@ -1,13 +1,30 @@
 package com.gamesUP.gamesUP.model;
 
-import java.util.List;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.List;
+import java.util.UUID;
+
+@Getter
+@Setter
+@Table(name = "author")
+@Entity
 public class Author {
 
-    public Long id;
-    
-    public String name;
-    
-    public List<Game> games;
+    @Id
+    @GeneratedValue
+    private UUID id;
+
+    private String name;
+
+    @ManyToMany
+    @JoinTable(
+        name = "author_game",
+        joinColumns = @JoinColumn(name = "author_id"),
+        inverseJoinColumns = @JoinColumn(name = "game_id")
+    )
+    private List<Game> games;
 
 }
