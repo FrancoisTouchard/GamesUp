@@ -3,14 +3,8 @@ package com.gamesUP.gamesUP.service.impl;
 import com.gamesUP.gamesUP.dto.GameDTO;
 import com.gamesUP.gamesUP.exception.ResourceAlreadyExistsException;
 import com.gamesUP.gamesUP.exception.ResourceNotFoundException;
-import com.gamesUP.gamesUP.model.Author;
-import com.gamesUP.gamesUP.model.Category;
-import com.gamesUP.gamesUP.model.Game;
-import com.gamesUP.gamesUP.model.Publisher;
-import com.gamesUP.gamesUP.repository.AuthorRepository;
-import com.gamesUP.gamesUP.repository.CategoryRepository;
-import com.gamesUP.gamesUP.repository.GameRepository;
-import com.gamesUP.gamesUP.repository.PublisherRepository;
+import com.gamesUP.gamesUP.model.*;
+import com.gamesUP.gamesUP.repository.*;
 import com.gamesUP.gamesUP.service.GameService;
 import com.gamesUP.gamesUP.service.mapper.GameMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +23,9 @@ public class GameServiceImpl implements GameService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private GenreRepository genreRepository;
 
     @Autowired
     private PublisherRepository publisherRepository;
@@ -69,6 +66,7 @@ public class GameServiceImpl implements GameService {
         Game existing = gameRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Jeu introuvable"));
         if (game.getName() != null) existing.setName(game.getName());
+        if (game.getNumEdition() != 0) existing.setNumEdition(game.getNumEdition());
         if (game.getAuthorNames() != null) {
             List<Author> authors = game.getAuthorNames().stream()
                     .map(name -> authorRepository.findByName(name)
@@ -76,12 +74,19 @@ public class GameServiceImpl implements GameService {
                     .collect(Collectors.toList());
             existing.setAuthors(authors);
         }
-        if (game.getGenre() != null) existing.setGenre(game.getGenre());
-        if (game.getNumEdition() != 0) existing.setNumEdition(game.getNumEdition());
-        if (game.getCategoryName() != null) {
-            Category category = categoryRepository.findByName(game.getCategoryName())
-                    .orElseThrow(() -> new ResourceNotFoundException("Catégorie introuvable : " + game.getCategoryName()));
-            existing.setCategory(category);
+        if (game.getCategoryNames() != null) {
+            List<Category> categories = game.getCategoryNames().stream()
+                    .map(name -> categoryRepository.findByName(name)
+                            .orElseThrow(() -> new ResourceNotFoundException("Catégorie introuvable : " + name)))
+                    .collect(Collectors.toList());
+            existing.setCategories(categories);
+        }
+        if (game.getGenreNames() != null) {
+            List<Genre> genres = game.getGenreNames().stream()
+                    .map(name -> genreRepository.findByName(name)
+                            .orElseThrow(() -> new ResourceNotFoundException("Genre introuvable : " + name)))
+                    .collect(Collectors.toList());
+            existing.setGenres(genres);
         }
         if (game.getPublisherName() != null) {
             Publisher publisher = publisherRepository.findByName(game.getPublisherName())
@@ -97,6 +102,7 @@ public class GameServiceImpl implements GameService {
         Game existing = gameRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Jeu introuvable"));
         if (game.getName() != null) existing.setName(game.getName());
+        if (game.getNumEdition() != 0) existing.setNumEdition(game.getNumEdition());
         if (game.getAuthorNames() != null) {
             List<Author> authors = game.getAuthorNames().stream()
                     .map(name -> authorRepository.findByName(name)
@@ -104,12 +110,19 @@ public class GameServiceImpl implements GameService {
                     .collect(Collectors.toList());
             existing.setAuthors(authors);
         }
-        if (game.getGenre() != null) existing.setGenre(game.getGenre());
-        if (game.getNumEdition() != 0) existing.setNumEdition(game.getNumEdition());
-        if (game.getCategoryName() != null) {
-            Category category = categoryRepository.findByName(game.getCategoryName())
-                    .orElseThrow(() -> new ResourceNotFoundException("Catégorie introuvable : " + game.getCategoryName()));
-            existing.setCategory(category);
+        if (game.getCategoryNames() != null) {
+            List<Category> categories = game.getCategoryNames().stream()
+                    .map(name -> categoryRepository.findByName(name)
+                            .orElseThrow(() -> new ResourceNotFoundException("Catégorie introuvable : " + name)))
+                    .collect(Collectors.toList());
+            existing.setCategories(categories);
+        }
+        if (game.getGenreNames() != null) {
+            List<Genre> genres = game.getGenreNames().stream()
+                    .map(name -> genreRepository.findByName(name)
+                            .orElseThrow(() -> new ResourceNotFoundException("Genre introuvable : " + name)))
+                    .collect(Collectors.toList());
+            existing.setGenres(genres);
         }
         if (game.getPublisherName() != null) {
             Publisher publisher = publisherRepository.findByName(game.getPublisherName())

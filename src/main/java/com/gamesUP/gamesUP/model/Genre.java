@@ -10,8 +10,8 @@ import java.util.UUID;
 @Getter
 @Setter
 @Entity
-@Table(name = "category")
-public class Category {
+@Table(name = "genre")
+public class Genre {
 
     @Id
     @GeneratedValue
@@ -19,7 +19,7 @@ public class Category {
 
     private String name;
 
-    @ManyToMany(mappedBy = "categories")
+    @ManyToMany(mappedBy = "genres")
     private List<Game> games;
 
 }

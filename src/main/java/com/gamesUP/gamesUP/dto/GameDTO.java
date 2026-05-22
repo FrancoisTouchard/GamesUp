@@ -1,5 +1,6 @@
 package com.gamesUP.gamesUP.dto;
 
+import com.gamesUP.gamesUP.model.Genre;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
@@ -19,8 +20,8 @@ public class GameDTO {
 
     private List<String> authorNames;
 
-    private String genre;
-    private String categoryName;
+    private List<String> genreNames;
+    private List<String> categoryNames;
 
     @NotNull(message = "Un jeu doit avoir un éditeur.")
     private String publisherName;

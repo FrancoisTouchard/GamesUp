@@ -30,13 +30,25 @@ public class Game {
     )
     private List<Author> authors;
 
-    private String genre;
+    @ManyToMany
+    @JoinTable(
+            name = "genre_game",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "genre_id")
+    )
+    private List<Genre> genres;
 
-    @ManyToOne
-    private Category category;
+    @ManyToMany
+    @JoinTable(
+            name = "category_game",
+            joinColumns = @JoinColumn(name = "game_id"),
+            inverseJoinColumns = @JoinColumn(name = "category_id")
+    )
+    private List<Category> categories;
 
     @ManyToOne
     private Publisher publisher;
+
     private int numEdition;
 
 }

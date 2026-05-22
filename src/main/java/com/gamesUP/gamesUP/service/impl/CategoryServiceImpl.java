@@ -4,7 +4,9 @@ import com.gamesUP.gamesUP.dto.CategoryDTO;
 import com.gamesUP.gamesUP.exception.ResourceAlreadyExistsException;
 import com.gamesUP.gamesUP.exception.ResourceNotFoundException;
 import com.gamesUP.gamesUP.model.Category;
+import com.gamesUP.gamesUP.model.Game;
 import com.gamesUP.gamesUP.repository.CategoryRepository;
+import com.gamesUP.gamesUP.repository.GameRepository;
 import com.gamesUP.gamesUP.service.CategoryService;
 import com.gamesUP.gamesUP.service.mapper.CategoryMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Autowired
     private CategoryRepository categoryRepository;
+
+    @Autowired
+    private GameRepository gameRepository;
 
     @Autowired
     private CategoryMapper categoryMapper;
@@ -73,6 +78,12 @@ public class CategoryServiceImpl implements CategoryService {
     public void deleteById(UUID id) {
         if (!categoryRepository.existsById(id)) {
             throw new ResourceNotFoundException("Catégorie introuvable");
+        }
+        for (Game game : gameRepository.findByCategoriesId(id)) {
+            game.getCategories().remove(game.getCategories().stream()
+                    .filter(a -> a.getId().equals(id))
+                    .findFirst().orElse(null));
+            gameRepository.save(game);
         }
         categoryRepository.deleteById(id);
     }
