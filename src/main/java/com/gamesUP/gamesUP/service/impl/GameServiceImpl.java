@@ -3,9 +3,11 @@ package com.gamesUP.gamesUP.service.impl;
 import com.gamesUP.gamesUP.dto.GameDTO;
 import com.gamesUP.gamesUP.exception.ResourceAlreadyExistsException;
 import com.gamesUP.gamesUP.exception.ResourceNotFoundException;
+import com.gamesUP.gamesUP.model.Author;
 import com.gamesUP.gamesUP.model.Category;
 import com.gamesUP.gamesUP.model.Game;
 import com.gamesUP.gamesUP.model.Publisher;
+import com.gamesUP.gamesUP.repository.AuthorRepository;
 import com.gamesUP.gamesUP.repository.CategoryRepository;
 import com.gamesUP.gamesUP.repository.GameRepository;
 import com.gamesUP.gamesUP.repository.PublisherRepository;
@@ -30,6 +32,9 @@ public class GameServiceImpl implements GameService {
 
     @Autowired
     private PublisherRepository publisherRepository;
+
+    @Autowired
+    private AuthorRepository authorRepository;
 
     @Autowired
     private GameMapper gameMapper;
@@ -64,7 +69,13 @@ public class GameServiceImpl implements GameService {
         Game existing = gameRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Jeu introuvable"));
         if (game.getName() != null) existing.setName(game.getName());
-        if (game.getAuthor() != null) existing.setAuthor(game.getAuthor());
+        if (game.getAuthorNames() != null) {
+            List<Author> authors = game.getAuthorNames().stream()
+                    .map(name -> authorRepository.findByName(name)
+                            .orElseThrow(() -> new ResourceNotFoundException("Auteur introuvable : " + name)))
+                    .collect(Collectors.toList());
+            existing.setAuthors(authors);
+        }
         if (game.getGenre() != null) existing.setGenre(game.getGenre());
         if (game.getNumEdition() != 0) existing.setNumEdition(game.getNumEdition());
         if (game.getCategoryName() != null) {
@@ -86,7 +97,13 @@ public class GameServiceImpl implements GameService {
         Game existing = gameRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Jeu introuvable"));
         if (game.getName() != null) existing.setName(game.getName());
-        if (game.getAuthor() != null) existing.setAuthor(game.getAuthor());
+        if (game.getAuthorNames() != null) {
+            List<Author> authors = game.getAuthorNames().stream()
+                    .map(name -> authorRepository.findByName(name)
+                            .orElseThrow(() -> new ResourceNotFoundException("Auteur introuvable : " + name)))
+                    .collect(Collectors.toList());
+            existing.setAuthors(authors);
+        }
         if (game.getGenre() != null) existing.setGenre(game.getGenre());
         if (game.getNumEdition() != 0) existing.setNumEdition(game.getNumEdition());
         if (game.getCategoryName() != null) {

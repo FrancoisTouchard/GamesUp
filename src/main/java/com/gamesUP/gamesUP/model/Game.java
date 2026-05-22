@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Setter
@@ -21,15 +22,19 @@ public class Game {
     @NotNull(message = "Un jeu doit avoir un nom.")
     private String name;
 
-    @NotNull(message = "Un jeu doit avoir un auteur.")
-    private String author;
+    @ManyToMany
+    @JoinTable(
+        name = "author_game",
+        joinColumns = @JoinColumn(name = "game_id"),
+        inverseJoinColumns = @JoinColumn(name = "author_id")
+    )
+    private List<Author> authors;
 
     private String genre;
 
     @ManyToOne
     private Category category;
 
-    @NotNull(message = "Un jeu doit avoir un éditeur.")
     @ManyToOne
     private Publisher publisher;
     private int numEdition;

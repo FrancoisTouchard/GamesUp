@@ -19,12 +19,7 @@ public class Author {
 
     private String name;
 
-    @ManyToMany
-    @JoinTable(
-        name = "author_game",
-        joinColumns = @JoinColumn(name = "author_id"),
-        inverseJoinColumns = @JoinColumn(name = "game_id")
-    )
+    @ManyToMany(mappedBy = "authors")
     private List<Game> games;
 
 }

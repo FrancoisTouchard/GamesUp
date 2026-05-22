@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Getter
@@ -16,8 +17,7 @@ public class GameDTO {
     @NotBlank(message = "Un jeu doit avoir un nom.")
     private String name;
 
-    @NotBlank(message = "Un jeu doit avoir un auteur.")
-    private String author;
+    private List<String> authorNames;
 
     private String genre;
     private String categoryName;
