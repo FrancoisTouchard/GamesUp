@@ -1,14 +1,20 @@
 package com.gamesUP.gamesUP.service.impl;
 
 import com.gamesUP.gamesUP.dto.AppUserDTO;
-import com.gamesUP.gamesUP.exception.ResourceAlreadyExistsException;
 import com.gamesUP.gamesUP.exception.ResourceNotFoundException;
 import com.gamesUP.gamesUP.model.AppUser;
+import com.gamesUP.gamesUP.model.Role;
 import com.gamesUP.gamesUP.repository.AppUserRepository;
+import com.gamesUP.gamesUP.repository.RoleRepository;
 import com.gamesUP.gamesUP.repository.WishlistRepository;
 import com.gamesUP.gamesUP.service.AppUserService;
 import com.gamesUP.gamesUP.service.mapper.AppUserMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,10 +29,16 @@ public class AppUserServiceImpl implements AppUserService {
     private AppUserRepository appUserRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private WishlistRepository wishlistRepository;
 
     @Autowired
     private AppUserMapper appUserMapper;
+
+    @Autowired
+    private BCryptPasswordEncoder passwordEncoder;
 
     @Override
     public List<AppUserDTO> findAll() {
@@ -43,9 +55,32 @@ public class AppUserServiceImpl implements AppUserService {
     }
 
     @Override
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        AppUser user = appUserRepository.findByName(username)
+                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
+        List<SimpleGrantedAuthority> authorities = List.of(
+                new SimpleGrantedAuthority("ROLE_" + user.getRole().getName())
+        );
+        return new User(user.getName(), user.getPassword(), authorities);
+    }
+
+    @Override
+    @Transactional
+    public AppUserDTO register(AppUserDTO dto) {
+        AppUser user = new AppUser();
+        user.setName(dto.getName());
+        user.setPassword(passwordEncoder.encode(dto.getPassword()));
+        Role defaultRole = roleRepository.findByName("USER")
+                .orElseThrow(() -> new ResourceNotFoundException("Role USER not found"));
+        user.setRole(defaultRole);
+        return appUserMapper.toDTO(appUserRepository.save(user));
+    }
+
+    @Override
     @Transactional
     public AppUserDTO create(AppUserDTO user) {
         AppUser userToSave = appUserMapper.toEntity(user);
+        userToSave.setPassword(passwordEncoder.encode(user.getPassword()));
         return appUserMapper.toDTO(appUserRepository.save(userToSave));
     }
 

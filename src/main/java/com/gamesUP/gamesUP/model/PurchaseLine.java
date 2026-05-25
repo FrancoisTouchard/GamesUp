@@ -8,7 +8,7 @@ import java.util.UUID;
 
 @Setter
 @Getter
-@Table(name = "purchaseLine")
+@Table(name = "purchase_line")
 @Entity
 public class PurchaseLine {
 

@@ -11,7 +11,7 @@ public class AppUserMapper {
         AppUserDTO dto = new AppUserDTO();
         dto.setId(user.getId());
         dto.setName(user.getName());
-        dto.setPassword(user.getPassword());
+//        dto.setPassword(user.getPassword());
         if (user.getWishlist() != null) {
             dto.setWishlistId(user.getWishlist().getId());
         }

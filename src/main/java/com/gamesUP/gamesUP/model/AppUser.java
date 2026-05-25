@@ -9,12 +9,12 @@ import java.util.UUID;
 
 @Setter
 @Getter
-@Table(name = "appUser")
+@Table(name = "app_user")
 @Entity
 public class AppUser {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
     @NotNull(message = "Un utilisateur doit avoir un nom.")
@@ -22,6 +22,10 @@ public class AppUser {
 
     @NotNull(message = "Un utilisateur doit avoir un mot de passe.")
     private String password;
+
+    @ManyToOne
+    @JoinColumn(name = "role_id")
+    private Role role;
 
     @OneToOne(mappedBy = "user")
     private Wishlist wishlist;
