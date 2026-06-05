@@ -6,6 +6,7 @@ import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jspecify.annotations.NonNull;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,8 +21,8 @@ import java.util.List;
 @Component
 public class JwtTokenFilter extends OncePerRequestFilter {
 
-    private JwtService jwtService;
-    private AppUserService appUserService;
+    private final JwtService jwtService;
+    private final AppUserService appUserService;
 
     public JwtTokenFilter(JwtService jwtService, AppUserService appUserService){
         this.jwtService = jwtService;
@@ -30,20 +31,19 @@ public class JwtTokenFilter extends OncePerRequestFilter {
 
     // extraction du token + authentification du user
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response, @NonNull FilterChain filterChain) throws ServletException, IOException {
 
         // extraction du header sous forme de string
         String header = request.getHeader(HttpHeaders.AUTHORIZATION.toLowerCase());
         // refuser header invalide (on sait que le format de Authorization attendu est "Bearer : token")
-        if(header == null || header.isEmpty() || !header.startsWith("Bearer ")){
+        if(header == null || !header.startsWith("Bearer ")){
             filterChain.doFilter(request, response);
             return;
         }
 
         String token = header.split(" ")[1].trim();
 
-        if(!jwtService.validate(token)) {
-            // le token a été refusé, on interrompt le filtre
+        if(jwtService.isBlacklisted(token) || !jwtService.validate(token)) {
             filterChain.doFilter(request, response);
             return;
         }

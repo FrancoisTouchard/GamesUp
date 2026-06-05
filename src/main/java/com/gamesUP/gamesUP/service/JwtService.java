@@ -11,16 +11,29 @@ import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.time.Instant;
 import java.util.Date;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Service
 public class JwtService {
+
+    private final Set<String> blacklistedTokens = ConcurrentHashMap.newKeySet();
 
     @Value("${jwt.secret}")
     private String generatedKey;
 
     @Value("${jwt.issuer}")
     private String issuer;
+
+    // Tokens après logout
+    public void blacklist(String token) {
+        blacklistedTokens.add(token);
+    }
+
+    public boolean isBlacklisted(String token) {
+        return blacklistedTokens.contains(token);
+    }
 
     public boolean validate(String token) {
 
