@@ -6,6 +6,7 @@ import com.gamesUP.gamesUP.model.AppUser;
 import com.gamesUP.gamesUP.model.Role;
 import com.gamesUP.gamesUP.repository.AppUserRepository;
 import com.gamesUP.gamesUP.repository.RoleRepository;
+import com.gamesUP.gamesUP.repository.PurchaseRepository;
 import com.gamesUP.gamesUP.repository.WishlistRepository;
 import com.gamesUP.gamesUP.service.AppUserService;
 import com.gamesUP.gamesUP.service.mapper.AppUserMapper;
@@ -33,6 +34,9 @@ public class AppUserServiceImpl implements AppUserService {
 
     @Autowired
     private WishlistRepository wishlistRepository;
+
+    @Autowired
+    private PurchaseRepository purchaseRepository;
 
     @Autowired
     private AppUserMapper appUserMapper;
@@ -111,6 +115,7 @@ public class AppUserServiceImpl implements AppUserService {
             throw new ResourceNotFoundException("Utilisateur introuvable");
         }
 
+        purchaseRepository.deleteAll(purchaseRepository.findByUserId(id));
         wishlistRepository.findByUserId(id).ifPresent(w -> wishlistRepository.delete(w));
 
         appUserRepository.deleteById(id);
