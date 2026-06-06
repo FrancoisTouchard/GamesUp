@@ -6,6 +6,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -50,5 +51,8 @@ public class Game {
     private Publisher publisher;
 
     private int numEdition;
+
+    @Column(precision = 10, scale = 2)
+    private BigDecimal price;
 
 }

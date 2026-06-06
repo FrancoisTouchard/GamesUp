@@ -34,6 +34,7 @@ public class GameMapper {
         dto.setId(game.getId());
         dto.setName(game.getName());
         dto.setNumEdition(game.getNumEdition());
+        dto.setPrice(game.getPrice());
         if (game.getCategories() != null) {
             dto.setCategoryNames(game.getCategories().stream()
                     .map(Category::getName)
@@ -59,6 +60,7 @@ public class GameMapper {
         Game game = new Game();
         game.setName(dto.getName());
         game.setNumEdition(dto.getNumEdition());
+        game.setPrice(dto.getPrice());
         if (dto.getAuthorNames() != null) {
             List<Author> authors = dto.getAuthorNames().stream()
                     .map(name -> authorRepository.findByName(name)

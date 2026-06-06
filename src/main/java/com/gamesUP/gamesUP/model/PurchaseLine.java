@@ -24,6 +24,4 @@ public class PurchaseLine {
     @JoinColumn(name = "game_id")
     private Game game;
 
-    private double price;
-
 }

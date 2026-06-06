@@ -1,11 +1,12 @@
 package com.gamesUP.gamesUP.dto;
 
-import com.gamesUP.gamesUP.model.Genre;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.UUID;
 
@@ -27,5 +28,8 @@ public class GameDTO {
     private String publisherName;
 
     private int numEdition;
+
+    @Positive(message = "Le prix doit être positif.")
+    private BigDecimal price;
 
 }

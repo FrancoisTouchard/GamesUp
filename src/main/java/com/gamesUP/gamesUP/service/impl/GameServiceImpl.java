@@ -93,6 +93,7 @@ public class GameServiceImpl implements GameService {
                     .orElseThrow(() -> new ResourceNotFoundException("Éditeur introuvable : " + game.getPublisherName()));
             existing.setPublisher(publisher);
         }
+        if (game.getPrice() != null) existing.setPrice(game.getPrice());
         return gameMapper.toDTO(gameRepository.save(existing));
     }
 
@@ -129,6 +130,7 @@ public class GameServiceImpl implements GameService {
                     .orElseThrow(() -> new ResourceNotFoundException("Éditeur introuvable : " + game.getPublisherName()));
             existing.setPublisher(publisher);
         }
+        if (game.getPrice() != null) existing.setPrice(game.getPrice());
         return gameMapper.toDTO(gameRepository.save(existing));
     }
 
