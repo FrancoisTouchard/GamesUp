@@ -2,6 +2,7 @@ package com.gamesUP.gamesUP.service.impl;
 
 import com.gamesUP.gamesUP.dto.GameDTO;
 import com.gamesUP.gamesUP.exception.ResourceAlreadyExistsException;
+import com.gamesUP.gamesUP.exception.ResourceInUseException;
 import com.gamesUP.gamesUP.exception.ResourceNotFoundException;
 import com.gamesUP.gamesUP.model.*;
 import com.gamesUP.gamesUP.repository.*;
@@ -32,6 +33,9 @@ public class GameServiceImpl implements GameService {
 
     @Autowired
     private AuthorRepository authorRepository;
+
+    @Autowired
+    private PurchaseLineRepository purchaseLineRepository;
 
     @Autowired
     private GameMapper gameMapper;
@@ -139,6 +143,9 @@ public class GameServiceImpl implements GameService {
     public void deleteById(UUID id) {
         if (!gameRepository.existsById(id)) {
             throw new ResourceNotFoundException("Jeu introuvable");
+        }
+        if (purchaseLineRepository.existsByGameId(id)) {
+            throw new ResourceInUseException("Ce jeu ne peut pas être supprimé car il est présent dans des commandes.");
         }
         gameRepository.deleteById(id);
     }
