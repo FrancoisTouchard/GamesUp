@@ -17,4 +17,13 @@ public interface GameService {
     GameDTO partialUpdate(UUID id, GameDTO game);
 
     void deleteById(UUID id);
+
+    List<GameDTO> findByCategoryName(String categoryName);
+
+    List<GameDTO> findByGenreName(String genreName);
+
+    List<GameDTO> findByPublisherName(String publisherName);
+
+    List<GameDTO> findByAuthorName(String authorName);
+
 }

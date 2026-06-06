@@ -31,6 +31,30 @@ public class GameController {
         return gameService.findById(id);
     }
 
+    @Operation(summary = "Get all games from a category by name")
+    @GetMapping("/category/{categoryName}")
+    public List<GameDTO> findByCategoryName(@PathVariable String categoryName) {
+        return gameService.findByCategoryName(categoryName);
+    }
+
+    @Operation(summary = "Get all games from a genre by name")
+    @GetMapping("/genre/{genreName}")
+    public List<GameDTO> findByGenreName(@PathVariable String genreName) {
+        return gameService.findByGenreName(genreName);
+    }
+
+    @Operation(summary = "Get all games from a publisher by name")
+    @GetMapping("/publisher/{publisherName}")
+    public List<GameDTO> findByPublisherName(@PathVariable String publisherName) {
+        return gameService.findByPublisherName(publisherName);
+    }
+
+    @Operation(summary = "Get all games from an author by name")
+    @GetMapping("/author/{authorName}")
+    public List<GameDTO> findByAuthorName(@PathVariable String authorName) {
+        return gameService.findByAuthorName(authorName);
+    }
+
     @Operation(summary = "Create a new game")
     @PostMapping
     public ResponseEntity<GameDTO> create(@Valid @RequestBody GameDTO game) {

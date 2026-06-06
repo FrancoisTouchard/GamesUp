@@ -140,4 +140,42 @@ public class GameServiceImpl implements GameService {
         }
         gameRepository.deleteById(id);
     }
+
+    @Override
+    public List<GameDTO> findByCategoryName(String categoryName) {
+        Category category = categoryRepository.findByName(categoryName)
+                .orElseThrow(() -> new ResourceNotFoundException("Catégorie introuvable : " + categoryName));
+        return gameRepository.findByCategoriesId(category.getId()).stream()
+                .map(gameMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GameDTO> findByGenreName(String genreName) {
+        Genre genre = genreRepository.findByName(genreName)
+                .orElseThrow(() -> new ResourceNotFoundException("Genre introuvable : " + genreName));
+        return gameRepository.findByGenresId(genre.getId()).stream()
+                .map(gameMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GameDTO> findByPublisherName(String publisherName) {
+        Publisher publisher = publisherRepository.findByName(publisherName)
+                .orElseThrow(() -> new ResourceNotFoundException("éditeur introuvable : " + publisherName));
+        return gameRepository.findByPublisherId(publisher.getId()).stream()
+                .map(gameMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<GameDTO> findByAuthorName(String authorName) {
+        Author author = authorRepository.findByName(authorName)
+                .orElseThrow(() -> new ResourceNotFoundException("Auteur introuvable : " + authorName));
+        return gameRepository.findByAuthorsId(author.getId()).stream()
+                .map(gameMapper::toDTO)
+                .collect(Collectors.toList());
+    }
+
+
 }
