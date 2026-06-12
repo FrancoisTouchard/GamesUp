@@ -9,6 +9,7 @@ import com.gamesUP.gamesUP.model.Wishlist;
 import com.gamesUP.gamesUP.repository.AppUserRepository;
 import com.gamesUP.gamesUP.repository.GameRepository;
 import com.gamesUP.gamesUP.repository.WishlistRepository;
+import com.gamesUP.gamesUP.service.AuthorizationService;
 import com.gamesUP.gamesUP.service.WishlistService;
 import com.gamesUP.gamesUP.service.mapper.WishlistMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class WishlistServiceImpl implements WishlistService {
     @Autowired
     private WishlistMapper wishlistMapper;
 
+    @Autowired
+    private AuthorizationService authorizationService;
+
     @Override
     public List<WishlistDTO> findAll() {
         return wishlistRepository.findAll().stream()
@@ -43,13 +47,18 @@ public class WishlistServiceImpl implements WishlistService {
 
     @Override
     public WishlistDTO findById(UUID id) {
-        return wishlistRepository.findById(id)
-                .map(wishlistMapper::toDTO)
+        Wishlist wishlist = wishlistRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Wishlist introuvable"));
+
+        authorizationService.checkIsAdminOrOwner(wishlist.getUser().getId());
+
+        return wishlistMapper.toDTO(wishlist);
     }
 
     @Override
     public WishlistDTO findByUserId(UUID userId) {
+        authorizationService.checkIsAdminOrOwner(userId);
+
         return wishlistRepository.findByUserId(userId)
                 .map(wishlistMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Wishlist introuvable pour l'utilisateur : " + userId));
@@ -59,9 +68,11 @@ public class WishlistServiceImpl implements WishlistService {
     @Transactional
     public WishlistDTO create(WishlistDTO wishlist) {
         if (wishlistRepository.existsByUserId(wishlist.getUserId())) {
+            authorizationService.checkIsAdminOrOwner(wishlist.getUserId());
             throw new ResourceAlreadyExistsException("Une wishlist existe déjà pour cet utilisateur");
         }
         Wishlist wishlistToSave = wishlistMapper.toEntity(wishlist);
+
         return wishlistMapper.toDTO(wishlistRepository.save(wishlistToSave));
     }
 
@@ -70,6 +81,9 @@ public class WishlistServiceImpl implements WishlistService {
     public WishlistDTO update(UUID id, WishlistDTO wishlist) {
         Wishlist existing = wishlistRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Wishlist introuvable"));
+
+        authorizationService.checkIsAdminOrOwner(existing.getUser().getId());
+
         if (wishlist.getGameNames() != null) {
             List<Game> games = wishlist.getGameNames().stream()
                     .map(name -> gameRepository.findByName(name)
@@ -85,6 +99,9 @@ public class WishlistServiceImpl implements WishlistService {
     public WishlistDTO partialUpdate(UUID id, WishlistDTO wishlist) {
         Wishlist existing = wishlistRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Wishlist introuvable"));
+
+        authorizationService.checkIsAdminOrOwner(existing.getUser().getId());
+
         if (wishlist.getGameNames() != null) {
             List<Game> games = wishlist.getGameNames().stream()
                     .map(name -> gameRepository.findByName(name)
@@ -100,6 +117,8 @@ public class WishlistServiceImpl implements WishlistService {
     public void deleteById(UUID id) {
         Wishlist wishlist = wishlistRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Wishlist introuvable"));
+
+        authorizationService.checkIsAdminOrOwner(wishlist.getUser().getId());
 
         AppUser user = wishlist.getUser();
         if (user != null) {

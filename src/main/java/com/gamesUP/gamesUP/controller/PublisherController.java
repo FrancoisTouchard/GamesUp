@@ -13,45 +13,45 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/publishers")
+@RequestMapping("/publishers/private")
 public class PublisherController {
 
     @Autowired
     private PublisherService publisherService;
 
     @Operation(summary = "Get all publishers")
-    @GetMapping
+    @GetMapping("/user")
     public List<PublisherDTO> findAll() {
         return publisherService.findAll();
     }
 
     @Operation(summary = "Get a publisher by id")
-    @GetMapping("/{id}")
+    @GetMapping("/user/{id}")
     public PublisherDTO findById(@PathVariable UUID id) {
         return publisherService.findById(id);
     }
 
     @Operation(summary = "Create a new publisher")
-    @PostMapping
+    @PostMapping("/admin")
     public ResponseEntity<PublisherDTO> create(@Valid @RequestBody PublisherDTO publisher) {
         PublisherDTO created = publisherService.create(publisher);
         return ResponseEntity.status(HttpStatus.CREATED).body(created);
     }
 
     @Operation(summary = "Update a publisher")
-    @PutMapping("/{id}")
+    @PutMapping("/admin/{id}")
     public ResponseEntity<PublisherDTO> update(@PathVariable UUID id, @Valid @RequestBody PublisherDTO publisher) {
         return ResponseEntity.ok(publisherService.update(id, publisher));
     }
 
     @Operation(summary = "Partially update a publisher")
-    @PatchMapping("/{id}")
+    @PatchMapping("/admin/{id}")
     public ResponseEntity<PublisherDTO> partialUpdate(@PathVariable UUID id, @RequestBody PublisherDTO publisher) {
         return ResponseEntity.ok(publisherService.partialUpdate(id, publisher));
     }
 
     @Operation(summary = "Delete a publisher by id")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         publisherService.deleteById(id);
         return ResponseEntity.noContent().build();

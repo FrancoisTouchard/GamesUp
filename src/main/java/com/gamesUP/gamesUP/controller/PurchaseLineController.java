@@ -11,7 +11,7 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/purchase-lines")
+@RequestMapping("/purchase-lines/private/user")
 public class PurchaseLineController {
 
     @Autowired

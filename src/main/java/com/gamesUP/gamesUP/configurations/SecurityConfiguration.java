@@ -28,9 +28,9 @@ public class SecurityConfiguration {
         // définit les patterns des routes qui seront publiques et privées
         return http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
-                    auth.requestMatchers("/api/public/**").permitAll()
-                            .requestMatchers("/api/private/user/**").hasAnyRole("USER", "ADMIN")
-                            .requestMatchers("/api/private/admin/**").hasRole("ADMIN")
+                    auth.requestMatchers("/public/**").permitAll()
+                            .requestMatchers("/*/private/user/**").hasAnyRole("USER", "ADMIN")
+                            .requestMatchers("/*/private/admin/**").hasRole("ADMIN")
                             .anyRequest().authenticated();
                     // ajout du filtre custom + de l'élément qui va lui succéder
                 }).addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class )

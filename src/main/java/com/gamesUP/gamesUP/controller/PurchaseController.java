@@ -13,20 +13,20 @@ import java.util.List;
 import java.util.UUID;
 
 @RestController
-@RequestMapping("/purchases")
+@RequestMapping("/purchases/private")
 public class PurchaseController {
 
     @Autowired
     private PurchaseService purchaseService;
 
     @Operation(summary = "Get all purchases")
-    @GetMapping
+    @GetMapping("/admin")
     public List<PurchaseDTO> findAll() {
         return purchaseService.findAll();
     }
 
     @Operation(summary = "Get a purchase by id")
-    @GetMapping("/{id}")
+    @GetMapping("/admin/{id}")
     public PurchaseDTO findById(@PathVariable UUID id) {
         return purchaseService.findById(id);
     }
@@ -51,13 +51,13 @@ public class PurchaseController {
     }
 
     @Operation(summary = "Update the status of a purchase")
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/admin/{id}/status")
     public ResponseEntity<PurchaseDTO> updateStatus(@PathVariable UUID id, @RequestParam PurchaseStatus status) {
         return ResponseEntity.ok(purchaseService.updateStatus(id, status));
     }
 
     @Operation(summary = "Delete a purchase by id")
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/admin/{id}")
     public ResponseEntity<Void> deleteById(@PathVariable UUID id) {
         purchaseService.deleteById(id);
         return ResponseEntity.noContent().build();

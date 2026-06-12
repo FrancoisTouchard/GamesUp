@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api")
 public class AuthController {
 
     private final AppUserService appUserService;
@@ -36,7 +35,7 @@ public class AuthController {
         return ResponseEntity.status(HttpStatus.CREATED).body(appUserService.register(dto));
     }
 
-    @PostMapping("/private/logout")
+    @PostMapping("/private/user/logout")
     public ResponseEntity<Void> logout(HttpServletRequest request) {
         String header = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (header != null && header.startsWith("Bearer ")) {

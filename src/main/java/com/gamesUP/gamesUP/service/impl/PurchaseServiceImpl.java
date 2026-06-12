@@ -6,6 +6,7 @@ import com.gamesUP.gamesUP.model.*;
 import com.gamesUP.gamesUP.repository.AppUserRepository;
 import com.gamesUP.gamesUP.repository.GameRepository;
 import com.gamesUP.gamesUP.repository.PurchaseRepository;
+import com.gamesUP.gamesUP.service.AuthorizationService;
 import com.gamesUP.gamesUP.service.PurchaseService;
 import com.gamesUP.gamesUP.service.mapper.PurchaseMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,6 +35,9 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Autowired
     private PurchaseMapper purchaseMapper;
 
+    @Autowired
+    private AuthorizationService authorizationService;
+
     @Override
     public List<PurchaseDTO> findAll() {
         return purchaseRepository.findAll().stream()
@@ -43,13 +47,18 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public PurchaseDTO findById(UUID id) {
-        return purchaseRepository.findById(id)
-                .map(purchaseMapper::toDTO)
+        Purchase purchase = purchaseRepository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("Commande introuvable : " + id));
+
+        authorizationService.checkIsAdminOrOwner(purchase.getUser().getId());
+
+        return purchaseMapper.toDTO(purchase);
     }
 
     @Override
     public List<PurchaseDTO> findByUserId(UUID userId) {
+        authorizationService.checkIsAdminOrOwner(userId);
+
         return purchaseRepository.findByUserId(userId).stream()
                 .map(purchaseMapper::toDTO)
                 .collect(Collectors.toList());
@@ -57,6 +66,8 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Override
     public PurchaseDTO findPendingByUserId(UUID userId) {
+        authorizationService.checkIsAdminOrOwner(userId);
+
         return purchaseRepository.findByUserIdAndStatus(userId, PurchaseStatus.PENDING)
                 .map(purchaseMapper::toDTO)
                 .orElseThrow(() -> new ResourceNotFoundException("Aucun panier en cours pour l'utilisateur : " + userId));
@@ -65,6 +76,8 @@ public class PurchaseServiceImpl implements PurchaseService {
     @Override
     @Transactional
     public PurchaseDTO addGameToCart(UUID userId, String gameName) {
+        authorizationService.checkIsAdminOrOwner(userId);
+
         AppUser user = appUserRepository.findById(userId)
                 .orElseThrow(() -> new ResourceNotFoundException("Utilisateur introuvable : " + userId));
 
