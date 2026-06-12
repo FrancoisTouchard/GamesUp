@@ -43,6 +43,16 @@ public class GlobalExceptionHandler {
         ));
     }
 
+    @ExceptionHandler(OutOfStockException.class)
+    public ResponseEntity<Map<String, Object>> handleOutOfStock(OutOfStockException ex) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(Map.of(
+                "status", 409,
+                "error", "Conflict",
+                "message", ex.getMessage(),
+                "timestamp", Instant.now().toString()
+        ));
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<Map<String, Object>> handleAccessDenied(AccessDeniedException ex) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Map.of(

@@ -1,10 +1,12 @@
 package com.gamesUP.gamesUP.service.impl;
 
 import com.gamesUP.gamesUP.dto.PurchaseDTO;
+import com.gamesUP.gamesUP.exception.OutOfStockException;
 import com.gamesUP.gamesUP.exception.ResourceNotFoundException;
 import com.gamesUP.gamesUP.model.*;
 import com.gamesUP.gamesUP.repository.AppUserRepository;
 import com.gamesUP.gamesUP.repository.GameRepository;
+import com.gamesUP.gamesUP.repository.InventoryRepository;
 import com.gamesUP.gamesUP.repository.PurchaseRepository;
 import com.gamesUP.gamesUP.service.AuthorizationService;
 import com.gamesUP.gamesUP.service.PurchaseService;
@@ -31,6 +33,9 @@ public class PurchaseServiceImpl implements PurchaseService {
 
     @Autowired
     private GameRepository gameRepository;
+
+    @Autowired
+    private InventoryRepository inventoryRepository;
 
     @Autowired
     private PurchaseMapper purchaseMapper;
@@ -83,6 +88,16 @@ public class PurchaseServiceImpl implements PurchaseService {
 
         Game game = gameRepository.findByName(gameName)
                 .orElseThrow(() -> new ResourceNotFoundException("Jeu introuvable : " + gameName));
+
+        Inventory inventory = inventoryRepository.findByGameId(game.getId())
+                .orElseThrow(() -> new ResourceNotFoundException(gameName + " n'est pas référencé dans l'inventaire du magasin."));
+
+        if (inventory.getStock() <= 0) {
+            throw new OutOfStockException(gameName + " est en rupture de stock.");
+        }
+
+        inventory.setStock(inventory.getStock() - 1);
+        inventoryRepository.save(inventory);
 
         Purchase purchase = purchaseRepository.findByUserIdAndStatus(userId, PurchaseStatus.PENDING)
                 .orElseGet(() -> createNewCart(user));

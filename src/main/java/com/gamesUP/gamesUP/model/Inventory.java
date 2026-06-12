@@ -1,9 +1,25 @@
 package com.gamesUP.gamesUP.model;
 
-import java.util.HashMap;
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
+import java.util.UUID;
+
+@Setter
+@Getter
+@Table(name = "inventory")
+@Entity
 public class Inventory {
 
-	HashMap<Game, Integer> stock;
-	
+	@Id
+	@GeneratedValue
+	private UUID id;
+
+	@OneToOne
+	@JoinColumn(name = "game_id")
+	private Game game;
+
+	private int stock;
+
 }
