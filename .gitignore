@@ -36,3 +36,10 @@ build/
 .DS_Store
 
 .env
+
+### Python (PythonApi) ###
+__pycache__/
+*.pyc
+venv/
+.venv/
+*.egg-info/
