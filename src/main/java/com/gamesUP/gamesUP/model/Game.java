@@ -50,6 +50,9 @@ public class Game {
     @ManyToOne
     private Publisher publisher;
 
+    @OneToMany(mappedBy = "game")
+    private List<Avis> avis;
+
     private int numEdition;
 
     @Column(precision = 10, scale = 2)

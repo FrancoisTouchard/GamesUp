@@ -5,6 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
 import java.util.UUID;
 
 @Setter
@@ -29,4 +30,7 @@ public class AppUser {
 
     @OneToOne(mappedBy = "user")
     private Wishlist wishlist;
+
+    @OneToMany(mappedBy = "user")
+    private List<Avis> avis;
 }
