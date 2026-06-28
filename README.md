@@ -45,7 +45,7 @@ JWT_SECRET=your_jwt_secret
 JWT_ISSUER=com.gamesUP
 ```
 
-> `RECOMMENDATION_API_URL` defaults to `http://localhost:8000` if not set.
+> `RECOMMENDATION_API_URL` defaults to `http://localhost:8000` if not set in application.properties.
 
 ### Run
 
