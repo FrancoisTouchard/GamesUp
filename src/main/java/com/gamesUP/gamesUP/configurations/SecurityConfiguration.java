@@ -29,6 +29,7 @@ public class SecurityConfiguration {
         return http.cors(Customizer.withDefaults()).csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/public/**").permitAll()
+                            .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                             .requestMatchers("/*/private/user/**").hasAnyRole("USER", "ADMIN")
                             .requestMatchers("/*/private/admin/**").hasRole("ADMIN")
                             .anyRequest().authenticated();
