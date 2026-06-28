@@ -26,4 +26,5 @@ public interface GameService {
 
     List<GameDTO> findByAuthorName(String authorName);
 
+    GameDTO findByName(String name);
 }

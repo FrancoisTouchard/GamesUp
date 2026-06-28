@@ -31,6 +31,10 @@ public class GameController {
         return gameService.findById(id);
     }
 
+    @Operation(summary = "Get a game by name")
+    @GetMapping(value = "/user", params = "name")
+    public GameDTO findByName(@RequestParam String name){ return gameService.findByName(name);}
+
     @Operation(summary = "Get all games from a category by name")
     @GetMapping("/user/category/{categoryName}")
     public List<GameDTO> findByCategoryName(@PathVariable String categoryName) {

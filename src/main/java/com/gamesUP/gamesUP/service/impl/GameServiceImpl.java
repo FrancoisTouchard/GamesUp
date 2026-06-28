@@ -55,6 +55,12 @@ public class GameServiceImpl implements GameService {
     }
 
     @Override
+    public GameDTO findByName(String name) {
+        return gameRepository.findByName(name)
+                .map(gameMapper::toDTO)
+                .orElseThrow(() -> new ResourceNotFoundException("Jeu introuvable"));    }
+
+    @Override
     @Transactional
     public GameDTO create(GameDTO game) {
         if (gameRepository.existsByName(game.getName())) {
@@ -185,6 +191,5 @@ public class GameServiceImpl implements GameService {
                 .map(gameMapper::toDTO)
                 .collect(Collectors.toList());
     }
-
 
 }
